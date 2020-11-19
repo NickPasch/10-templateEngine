@@ -33,6 +33,8 @@ const render = require("./lib/htmlRenderer");
 // for further information. Be sure to test out each class and verify it generates an
 // object with the correct structure and methods. This structure will be crucial in order
 // for the provided `render` function to work! ```
+var finalTeam = [];
+
 function toInput(){
 inquirer.prompt([
     {
@@ -48,6 +50,12 @@ inquirer.prompt([
             createEmployee();
             break;
         case 'No':
+            fs.writeFile(outputPath, render(finalTeam), (err) =>{
+                if (err) throw err;
+                else{
+                    console.log("successfully rendered html")
+                }
+            })
             break;
         default:
     }
@@ -82,18 +90,14 @@ function createEmployee(answer){
         type: "list",
         message: "what type of employee is this?",
         name: "employee",
-        choices: ["Intern", "Engineer", "Manager"]
+        choices: ["Intern", "Engineer", "Manager", "No More"]
         }
     ]
     ).then(answers =>{
-        console.log(answers.name)
-        console.log(answers.id)
-        console.log(answers.email)
-        console.log(answers.employee)
-        theName = answers.name;
         switch(answers.employee){
             case 'Intern':
-                var arr = [];
+                const newIntern = new Intern (answers.name, answers.id, answers.email)
+                console.log(newIntern)
                 inquirer.prompt([
                     {
                         type: "input",
@@ -101,41 +105,76 @@ function createEmployee(answer){
                         name: "school"
                     }
                 ]).then(answers =>{
-                    arr.push(answers.school)
+                    newIntern.school = answers.school
+                    console.log(newIntern)
+                    finalTeam.push(newIntern)
+                    addMore();
                 })
-                console.log(arr[0])
-                // console.log(answers.id)
                 break;
             case 'Engineer':
-                createEngineer(answers.employee);
+                const newEngineer = new Engineer (answers.name, answers.id, answers.email)
+                inquirer.prompt([
+                    {
+                        type: "input",
+                        message: "What is your github username?",
+                        name: "git"
+                    }
+                ]).then(answers =>{
+                    newEngineer.github = answers.git
+                    console.log(newEngineer)
+                    finalTeam.push(newEngineer)
+                    addMore();
+                })
                 break;
             case 'Manager':
-                createManger(answers.employee);
+                const newManager = new Manager (answers.name, answers.id, answers.email)
+                console.log(newManager)
+                inquirer.prompt([
+                    {
+                        type: "input",
+                        message: "What is your office number?",
+                        name: "num"
+                    }
+                ]).then(answers =>{
+                    newManager.officeNumber = answers.num
+                    console.log(newManager)
+                    finalTeam.push(newManager)
+                    addMore();
+                })
+                // addMore();
                 break;
+            case 'No More':
+                fs.writeFile(outputPath, render(finalTeam), (err) =>{
+                    if(err) throw err;
+                    else{
+                        console.log("successfully rendered html")
+                    }
+                })
             default:
 
         }
     })
 }
 
-var allInterns = [];
+function addMore(){
+    inquirer.prompt({
+        type:"list",
+        message:"Would you like to add more?",
+        name:"bool",
+        choices:["Yes", "No"]
+    }).then(answers =>{
+        switch(answers.bool){
+            case 'Yes':
+                toInput();
+                break;
+            case 'No':
+                fs.writeFile(outputPath, render(finalTeam), (err) =>{
+                    if (err) throw err;
+                    else{
+                        console.log("successfully rendered html")
+                    }
+                })
+        }
+    }) 
+}
 
-// function createIntern(){
-//     // console.log(answer.name)
-//     inquirer.prompt([
-//         {
-//             type: "input",
-//             message: "What school do you or did you attend?",
-//             name: "school"
-//         }
-//     ]).then(answers =>{
-
-//         console.log(answers.school);
-//         return answers.school;
-//         // intern.getSchool(answers.school);
-//         // console.log(intern)
-//         // intern1.school = answers.school;
-//         // console.log(intern)
-//     })
-
-// }
