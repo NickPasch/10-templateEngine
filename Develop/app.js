@@ -33,3 +33,109 @@ const render = require("./lib/htmlRenderer");
 // for further information. Be sure to test out each class and verify it generates an
 // object with the correct structure and methods. This structure will be crucial in order
 // for the provided `render` function to work! ```
+function toInput(){
+inquirer.prompt([
+    {
+        type: "list",
+        message: "Create employee?",
+        name: "employee",  
+        choices: ["Yes",  "No"]  
+    }
+]).then (answers =>{
+    console.log(answers.employee)
+    switch(answers.employee){
+        case 'Yes':
+            createEmployee();
+            break;
+        case 'No':
+            break;
+        default:
+    }
+
+})
+}
+
+toInput();
+
+var theName = "";
+
+function createEmployee(answer){
+    console.log(answer)
+
+    inquirer.prompt([
+        {
+        type: "input",
+        message: "What is the name of this employee?",
+        name: "name"
+        },
+        {
+        type: "number",
+        message: "What is this employee's ID?",
+        name: "id"
+        },
+        {
+        type: "input",
+        message: "What is this employee's email?",
+        name: "email"
+        },
+        {
+        type: "list",
+        message: "what type of employee is this?",
+        name: "employee",
+        choices: ["Intern", "Engineer", "Manager"]
+        }
+    ]
+    ).then(answers =>{
+        console.log(answers.name)
+        console.log(answers.id)
+        console.log(answers.email)
+        console.log(answers.employee)
+        theName = answers.name;
+        switch(answers.employee){
+            case 'Intern':
+                var arr = [];
+                inquirer.prompt([
+                    {
+                        type: "input",
+                        message: "What school do you or did you attend?",
+                        name: "school"
+                    }
+                ]).then(answers =>{
+                    arr.push(answers.school)
+                })
+                console.log(arr[0])
+                // console.log(answers.id)
+                break;
+            case 'Engineer':
+                createEngineer(answers.employee);
+                break;
+            case 'Manager':
+                createManger(answers.employee);
+                break;
+            default:
+
+        }
+    })
+}
+
+var allInterns = [];
+
+// function createIntern(){
+//     // console.log(answer.name)
+//     inquirer.prompt([
+//         {
+//             type: "input",
+//             message: "What school do you or did you attend?",
+//             name: "school"
+//         }
+//     ]).then(answers =>{
+
+//         console.log(answers.school);
+//         return answers.school;
+//         // intern.getSchool(answers.school);
+//         // console.log(intern)
+//         // intern1.school = answers.school;
+//         // console.log(intern)
+//     })
+
+// }
