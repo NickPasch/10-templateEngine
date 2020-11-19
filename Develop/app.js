@@ -10,6 +10,8 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
+// Here at the top we have all the required modules and such that we need
+
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
@@ -33,8 +35,11 @@ const render = require("./lib/htmlRenderer");
 // for further information. Be sure to test out each class and verify it generates an
 // object with the correct structure and methods. This structure will be crucial in order
 // for the provided `render` function to work! ```
+
+// Here I define the array for the final team that will be displayed on the html 
 var finalTeam = [];
 
+// This is the first question that is asked when the user invokes the program or asks to input another employee
 function toInput(){
 inquirer.prompt([
     {
@@ -45,6 +50,7 @@ inquirer.prompt([
     }
 ]).then (answers =>{
     console.log(answers.employee)
+    // This switch deals so that the html will be rendered if 'no and will ask questions if 'yes'
     switch(answers.employee){
         case 'Yes':
             createEmployee();
@@ -62,11 +68,12 @@ inquirer.prompt([
 
 })
 }
-
+// Running the function 
 toInput();
 
-var theName = "";
 
+// This is run if 'yes' is selected, it gathers all information for a standard employee and sees for  
+// which type of employee the user wants 
 function createEmployee(answer){
     console.log(answer)
 
@@ -94,10 +101,14 @@ function createEmployee(answer){
         }
     ]
     ).then(answers =>{
+        // Switch case handling the answers to which type of employee so that 
+        // I can know which unique type of data to grab next
         switch(answers.employee){
             case 'Intern':
+                // This code is basically pasted into all other cases, and constructs the new specific object
                 const newIntern = new Intern (answers.name, answers.id, answers.email)
                 console.log(newIntern)
+                // Getting the last information
                 inquirer.prompt([
                     {
                         type: "input",
@@ -105,9 +116,12 @@ function createEmployee(answer){
                         name: "school"
                     }
                 ]).then(answers =>{
+                    // Setting the last information
                     newIntern.school = answers.school
                     console.log(newIntern)
+                    // Pushing to final array
                     finalTeam.push(newIntern)
+                    // Ask if user wants to add another
                     addMore();
                 })
                 break;
@@ -143,6 +157,7 @@ function createEmployee(answer){
                 })
                 // addMore();
                 break;
+            // If no more, then the html will be rendered
             case 'No More':
                 fs.writeFile(outputPath, render(finalTeam), (err) =>{
                     if(err) throw err;
@@ -157,17 +172,21 @@ function createEmployee(answer){
 }
 
 function addMore(){
+    // Asking if they do or do not want to add more after adding their last employee
     inquirer.prompt({
         type:"list",
         message:"Would you like to add more?",
         name:"bool",
         choices:["Yes", "No"]
     }).then(answers =>{
+        // Prompting necessary questions to add a new employee
         switch(answers.bool){
             case 'Yes':
+                // Recycle other code
                 toInput();
                 break;
             case 'No':
+                // Write html if no 
                 fs.writeFile(outputPath, render(finalTeam), (err) =>{
                     if (err) throw err;
                     else{

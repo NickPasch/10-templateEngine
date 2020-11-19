@@ -1,6 +1,10 @@
 // TODO: Write code to define and export the Intern class.  HINT: This class should inherit from Employee.
 var Employee = require("./Employee");
 
+
+// Writing code so that all jest tests were passed and adding 
+// all criteria from the readme, extending the employee class
+// to recycle the code
 class Intern extends Employee {
     constructor(name, id, email, school){
         super(name, id, email)
